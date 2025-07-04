@@ -7,7 +7,7 @@ export const app = express();
 app.use(express.json(),);
 
 
-app.use("/books", booksRoutes)
+app.use("/api/books", booksRoutes)
 //routes
 
 app.get("/", (req: Request, res: Response) => {
