@@ -11,7 +11,10 @@ import { Ibooks } from "../interfaces/book.interface";
    isbn: {type: String , required: true, trim: true},
     description: {type: String , required: true, trim: true},
    copies : {type: Number , required: true},
-    available: {type: Boolean , required: true},
+    available: {type: Boolean , required: true}
+ },{
+   timestamps: true,
+   versionKey: false
  }) 
  
 
