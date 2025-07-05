@@ -15,7 +15,25 @@ import { Ibooks } from "../interfaces/book.interface";
  },{
    timestamps: true,
    versionKey: false
- }) 
+ })
+ 
+ //creating a instance method in every book called borrow and
+ //  it takes a quantity parmeter and then calculate the copies
+
+ bookSchema.methods.borrow = async function(quantity:number) {
+  //check how much have
+   if(this.copies < quantity){
+    throw new Error('Not enough copies available')
+   }
+   //minus the copies form quantitys
+   this.copies -= quantity
+   //check avalibityou
+   if (this.copies === 0 ) {
+     this.available = false;
+   }
+   
+   await this.save()
+  }
  
 
 
