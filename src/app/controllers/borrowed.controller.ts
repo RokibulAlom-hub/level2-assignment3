@@ -19,19 +19,20 @@ borrowRoutes.post("/", async(req:Request, res: Response) : Promise<any> => {
 
     // create a borrow record 
     const borrowRecord = await Borrow.create({
+      //i dont exacly give req.body cause didnt getting data by aggration so i take help of ai and added data like this 
   book: new Types.ObjectId(req.body.book),
   quantity: req.body.quantity,
   dueDate: req.body.dueDate
 })
 
-     // Step 5: Send response
+     
     res.status(201).json({
       success: true,
       message: "Book borrowed successfully",
       data: borrowRecord
     });
 })
-// get borrow by mongodb aggregation
+// get borrow by mongodb aggregation honestly i take a lots of ai help here by understanding the code specially for lookup
 
 borrowRoutes.get("/",async(req:Request, res: Response) => {
   const summary =  await Borrow.aggregate([
@@ -46,19 +47,19 @@ borrowRoutes.get("/",async(req:Request, res: Response) => {
       // look up book details from  book collection 
       $lookup:{
         from:"books",
-        localField:"_id",
-        foreignField:"_id",
+        localField:"_id", // this is local field where books real id 
+        foreignField:"_id", // thisi is foregn key it stored in borrow database
         as:"bookDetails"
       }
     },
     {
-      //converitng book details array into object
+      //converting book details array into object for separate data
       $unwind:
         "$bookDetails"
       
     },
     {
-      //select title and isbn
+      //select title and isbn for showing the data in query
       $project:{
         _id:0,
         totalquantity: 1,
