@@ -1,110 +1,114 @@
-import express, {  Request, Response } from "express"
+import express, { Request, Response } from "express"
 import { Book } from "../models/book.model";
 
 export const booksRoutes = express.Router()
 
 //create route for book creating
-booksRoutes.post('/',async (req: Request, res: Response) => {
-    const body = req.body ;
+booksRoutes.post('/', async (req: Request, res: Response) => {
+  try {
+    const body = req.body;
     const book = await Book.create(body)
-    res.status(201).json ({
-        success: true,
-        message: "Book created successfuly ",
-        book
+    res.status(201).json({
+      success: true,
+      message: "Book created successfuly ",
+      book
     })
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create book',
+      error: error.message,
+    });
+  }
 })
 
-// data getting route
+//all the obook data getting route
 
-booksRoutes.get('/',async (req: Request, res: Response) => {
+booksRoutes.get('/', async (req: Request, res: Response) => {
+  try {
+    // here first type validaton done for filter sortby, sortbtorders, limit
     const filter = typeof req.query.filter === 'string' ? req.query.filter : undefined;
-    const sortBy =typeof req.query.sortBy === 'string' ? req.query.sortBy : 'createdAt';
+    const sortBy = typeof req.query.sortBy === 'string' ? req.query.sortBy : 'createdAt';
     const sortByorder = req.query.sort === 'desc' ? -1 : 1;
     const limit = parseInt(req.query.limit as string, 10) || 10
+
     let query = {}
     if (filter) {
-      query  = {genre: filter}
+      query = { genre: filter }
     }
     const books = await Book.find(query)
-    .sort({[sortBy] : sortByorder})
-    .limit(limit)
-      res.status(201).json ({
-        success: true,
-        message: "Books getting successfuly ",
-        books
+    //here sortBy i didnt first get how to do it for dynamic sort then help of ai i wrap sortby with []
+      .sort({ [sortBy]: sortByorder })
+      .limit(limit)
+    res.status(201).json({
+      success: true,
+      message: "Books getting successfuly ",
+      books
     })
+
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve books',
+      error: error.message,
+    });
+  }
 })
 
-
-//   try {
-//     // Validate and parse query parameters
-//     const filter = typeof req.query.filter === 'string' ? req.query.filter : undefined;
-//     const sortBy = typeof req.query.sortBy === 'string' ? req.query.sortBy : 'createdAt';
-//     const sortOrder = req.query.sort === 'desc' ? -1 : 1;
-//     const limit = parseInt(req.query.limit as string, 10) || 10;
-
-//     // Validate sortBy to prevent injection
-//     const validSortFields = ['createdAt', 'title', 'author', 'genre']; // Example fields
-//     if (!validSortFields.includes(sortBy)) {
-//       return res.status(400).json({
-//         success: false,
-//         message: 'Invalid sortBy field',
-//       });
-//     }
-
-//     // Build query
-//     const query = filter ? { genre: filter } : {};
-
-//     // Fetch books
-//     const books = await Book.find(query)
-//       .sort({ [sortBy]: sortOrder }) // Use computed property for dynamic key
-//       .limit(limit);
-
-//     // Send response
-//     res.status(200).json({
-//       success: true,
-//       message: 'Books retrieved successfully',
-//       books,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: 'Failed to retrieve books',
-//       error: error.message,
-//     });
-//   }
-// });
-// data getting route by id
-
-booksRoutes.get('/:bookId',async (req: Request, res: Response) => {
+// signle book data getting 
+booksRoutes.get('/:bookId', async (req: Request, res: Response) => {
+  try {
     const bookId = req.params.bookId
     const book = await Book.findById(bookId)
-      res.status(201).json ({
-        success: true,
-        message: "Book getting successfuly ",
-        book
+    res.status(201).json({
+      success: true,
+      message: "Book getting successfuly ",
+      book
     })
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve book',
+      error: error.message,
+    });
+  }
 })
 // data update route by id
 
-booksRoutes.put('/:bookId',async (req: Request, res: Response) => {
+booksRoutes.put('/:bookId', async (req: Request, res: Response) => {
+  try {
     const bookId = req.params.bookId
     const updateData = req.body
-    const book = await Book.findByIdAndUpdate(bookId,updateData,{new: true})
-      res.status(201).json ({
-        success: true,
-        message: "Book updated successfuly ",
-        book
+    const book = await Book.findByIdAndUpdate(bookId, updateData, { new: true })
+    res.status(201).json({
+      success: true,
+      message: "Book updated successfuly ",
+      book
     })
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update books data',
+      error: error.message,
+    });
+  }
 })
-// data update route by id
+// data book delete route by id
 
-booksRoutes.delete('/:bookId',async (req: Request, res: Response) => {
+booksRoutes.delete('/:bookId', async (req: Request, res: Response) => {
+  try {
     const bookId = req.params.bookId
     const book = await Book.findByIdAndDelete(bookId)
-      res.status(201).json ({
-        success: true,
-        message: "Book deleted successfuly ",
-        data: null
+    res.status(201).json({
+      success: true,
+      message: "Book deleted successfuly ",
+      data: null
     })
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete book',
+      error: error.message,
+    });
+  }
 })
