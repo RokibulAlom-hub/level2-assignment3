@@ -2,6 +2,7 @@ import express, { Request, Response } from "express"
 import { Book } from "../models/book.model";
 
 export const booksRoutes = express.Router()
+// console.log(`this is form book`,booksRoutes);
 
 //create route for book creating
 booksRoutes.post('/', async (req: Request, res: Response) => {
@@ -39,7 +40,6 @@ booksRoutes.get('/', async (req: Request, res: Response) => {
     const books = await Book.find(query)
     //here sortBy i didnt first get how to do it for dynamic sort then help of ai i wrap sortby with []
       .sort({ [sortBy]: sortByorder })
-      .limit(limit)
     res.status(201).json({
       success: true,
       message: "Books getting successfuly ",
@@ -75,7 +75,7 @@ booksRoutes.get('/:bookId', async (req: Request, res: Response) => {
 })
 // data update route by id
 
-booksRoutes.put('/:bookId', async (req: Request, res: Response) => {
+booksRoutes.patch('/:bookId', async (req: Request, res: Response) => {
   try {
     const bookId = req.params.bookId
     const updateData = req.body

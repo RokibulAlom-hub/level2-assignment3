@@ -35,3 +35,16 @@ npm run dev
 # Production
 npm run build && npm start
 
+ //   await findBook.borrow(quantity);
+
+  //   const borrowRecord = await Borrow.create({
+  //     book: new Types.ObjectId(bookId),
+  //     quantity,
+  //     dueDate,
+  //   });
+
+  //   res.status(201).json({
+  //     success: true,
+  //     message: "Book borrowed successfully",
+  //     data: borrowRecord,
+  //   });
